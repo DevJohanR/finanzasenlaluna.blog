@@ -1,0 +1,25 @@
+/*PostAuthor.module.css*/
+.post_author {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit; /* Añade más estilos si necesitas */
+  }
+  .post__author-avatar{
+    width: 2.5rem;
+    aspect-ratio: 1/1;
+    border-radius: var(--radius-2);
+}
+
+
+  .post_author_avatar img {
+    width: 50px; /* ajusta según tu diseño */
+    height: 50px;
+    border-radius: 50%;
+  }
+  
+  
+  .post_author_details {
+    margin-left: 10px;
+  }
+  

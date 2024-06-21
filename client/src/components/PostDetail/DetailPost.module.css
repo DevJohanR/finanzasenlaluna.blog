@@ -1,0 +1,29 @@
+.postDetail{
+    width: var(--form-width);
+    background: var(--color-white);
+    margin-inline: auto;
+    padding: 2rem 0;
+}
+
+.postDetailHeader{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.postDetailButtons{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.postDetailThumbnail{
+    margin: 1rem 0;
+    height: fit-content;
+    max-height: 30rem;
+    overflow: hidden;
+}
+
+.postDetail p {
+    margin-bottom: 0.7rem;
+}
