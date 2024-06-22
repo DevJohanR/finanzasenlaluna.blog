@@ -13,10 +13,10 @@ const Header = () => {
           <img src={Logo} style={{display:'block', objectFit:'cover', width:'100%'}} alt="Navbar Logo" />
         </Link>
         <ul className={styles.navMenu}>
-          <li><Link to="/profile">Ernest Achiever</Link></li>
-          <li><Link to="/create">Create Post</Link></li>
-          <li><Link to="/authors">Authors</Link></li>
-          <li><Link to="/logout">Logout</Link></li>
+          <li><Link to="/profile">Norman Luna</Link></li>
+          <li><Link to="/create">Crear publicación</Link></li>
+          <li><Link to="/authors">Autores</Link></li>
+          <li><Link to="/logout">Cerrar sesión</Link></li>
         </ul>
         <button className={styles.navToggleBtn}>
         <AiOutlineClose/>

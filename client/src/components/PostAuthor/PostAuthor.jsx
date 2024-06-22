@@ -10,8 +10,8 @@ const PostAuthor = () => {
         <img src={Avatar} alt="Ernest Achiever" />
       </div>
       <div className={styles.post_author_details}>
-        <h5>By: Ernest Achiever</h5>
-        <small>Just Now</small>
+        <h5>Por: Norman Luna</h5>
+        <small>En este momento</small>
       </div>
     </Link>
   );

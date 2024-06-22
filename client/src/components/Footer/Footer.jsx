@@ -6,14 +6,14 @@ const Footer = () => {
   return (
     <footer className={styles.footer}>
       <ul className={styles.footerCategories}>
-        <li><Link to="/posts/categories/Agriculture">Agriculture</Link></li>
-        <li><Link to="/posts/categories/Business">Business</Link></li>
-        <li><Link to="/posts/categories/Education">Education</Link></li>
-        <li><Link to="/posts/categories/Entertainment">Entertainment</Link></li>
-        <li><Link to="/posts/categories/Art">Art</Link></li>
-        <li><Link to="/posts/categories/Investment">Investment</Link></li>
-        <li><Link to="/posts/categories/Uncategorized">Uncategorized</Link></li>
-        <li><Link to="/posts/categories/Weather">Weather</Link></li>
+        <li><Link to="/posts/categories/Agriculture">Finanzas</Link></li>
+        <li><Link to="/posts/categories/Business">Empresas</Link></li>
+        <li><Link to="/posts/categories/Education">Educación</Link></li>
+        <li><Link to="/posts/categories/Entertainment">Seguridad</Link></li>
+        <li><Link to="/posts/categories/Art">Trading</Link></li>
+        <li><Link to="/posts/categories/Investment">Inversiones</Link></li>
+        <li><Link to="/posts/categories/Uncategorized">Sin Categoria</Link></li>
+        <li><Link to="/posts/categories/Weather">Noticias</Link></li>
       </ul>
       <div className={styles.footerCopyright}>
         <small>Todos los derechos reservados</small>

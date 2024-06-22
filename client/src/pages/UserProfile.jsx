@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaEdit, FaCheck } from 'react-icons/fa';
-import AvatarImage from '../components/images/avatar15.jpg'; // Asegúrate de que la ruta es correcta
+import AvatarImage from '../components/images/avatar1.jpg'; // Asegúrate de que la ruta es correcta
 
 const ProfileSection = styled.section`
   display: flex;
@@ -105,7 +105,7 @@ const UserProfile = () => {
   return (
     <ProfileSection>
       <Container>
-        <Button to="/myposts/sdfsdf">My posts</Button>
+        <Button to="/myposts/sdfsdf">Mis publicaciones</Button>
         <AvatarWrapper>
           <Avatar src={avatar} alt="User Avatar" />
         </AvatarWrapper>
@@ -113,17 +113,17 @@ const UserProfile = () => {
           <Input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" onChange={handleAvatarChange} />
           <Label htmlFor="avatar"><FaEdit /> Edit</Label>
           <FormAction>
-            <ActionButton><FaCheck /> Check</ActionButton>
+            <ActionButton><FaCheck /> Confirmar</ActionButton>
           </FormAction>
         </Form>
         <Form>
-          <Input type="text" placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} />
-          <Input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-          <Input type="password" placeholder="Current Password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} />
-          <Input type="password" placeholder="New Password" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
-          <Input type="password" placeholder="Confirm New Password" value={confirmNewPassword} onChange={e => setConfirmNewPassword(e.target.value)} />
+          <Input type="text" placeholder="Nombre Completo" value={name} onChange={e => setName(e.target.value)} />
+          <Input type="email" placeholder="Correo Electronico" value={email} onChange={e => setEmail(e.target.value)} />
+          <Input type="password" placeholder="Contraseña Actual" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} />
+          <Input type="password" placeholder="Contraseña Nueva" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
+          <Input type="password" placeholder="Confirmar Nueva Contraseña" value={confirmNewPassword} onChange={e => setConfirmNewPassword(e.target.value)} />
           <FormAction>
-            <ActionButton type="submit">Update Details</ActionButton>
+            <ActionButton type="submit">Actualizar Detalles</ActionButton>
           </FormAction>
         </Form>
       </Container>
