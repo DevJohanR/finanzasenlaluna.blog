@@ -72,13 +72,18 @@ const createPost = async (req, res, next) => {
 
 
 
-// =========== CREATE A POST
+// =========== GET ALL POSTS
 
-//POST : api/posts
-//PROTECTED
+// : api/posts
+//UNPROTECTED
 
 const getPosts = async (req, res,next)=>{
-    res.json("Get Post")
+   try{
+    const posts = await Post.find().sort({updatedAt: -1})
+    res.status(200).json(posts)
+   }catch{
+    return next(new HttpError(error))
+   }
 }
 
 // =========== CREATE A POST
@@ -88,15 +93,25 @@ const getPosts = async (req, res,next)=>{
 
 const getPost = async (req, res, next) => {
     try {
-        const post = await Post.findById(req.params.id);
-        if (!post) {
-            return res.status(404).json({ message: "Post not found" });
-        }
-        res.json(post);
+      // Obtiene el ID del post desde los parámetros de la URL
+      const postId = req.params.id;
+  
+      // Intenta encontrar el post por ID utilizando una función ficticia Post.findById que podría estar definida en un modelo de Mongoose
+      const post = await Post.findById(postId);
+  
+      // Verifica si el post existe
+      if (!post) {
+        // Si no se encuentra el post, envía un error 404 con un mensaje
+        return next(new HttpError("Post not found.", 404));
+      }
+  
+      // Si el post existe, envía el post como respuesta con un estado HTTP 200
+      res.status(200).json(post);
     } catch (error) {
-        next(error);
+      // Maneja cualquier otro error que pueda ocurrir durante la ejecución
+      return next(new HttpError(error));
     }
-};
+  }
 
 
 
@@ -105,9 +120,21 @@ const getPost = async (req, res, next) => {
 //POST : api/posts
 //PROTECTED
 
-const getCatPosts = async (req, res,next)=>{
-    res.json("Get Cat Posts")
-}
+const getCatPosts = async (req, res, next) => {
+    try {
+      // Extrae la categoría desde los parámetros de la URL
+      const { category } = req.params;
+  
+      // Busca en la base de datos todos los posts que coincidan con la categoría dada y los ordena por fecha de creación de manera descendente
+      const catPosts = await Post.find({ category }).sort({ createdAt: -1 });
+  
+      // Si encuentra posts, los devuelve como respuesta con un estado HTTP 200
+      res.status(200).json(catPosts);
+    } catch (error) {
+      // En caso de error durante la búsqueda, pasa el error al middleware de manejo de errores de Express
+      return next(new HttpError(error));
+    }
+  }
 
 
 // =========== CREATE A POST
@@ -115,18 +142,110 @@ const getCatPosts = async (req, res,next)=>{
 //POST : api/posts
 //PROTECTED
 
-const getUserPosts = async (req, res,next)=>{
-    res.json("Get User Post")
+const getUserPosts = async (req, res, next) => {
+    try {
+      // Extrae el ID del usuario desde los parámetros de la URL
+      const { id } = req.params;
+  
+      // Busca en la base de datos todos los posts cuyo campo 'creator' coincide con el ID del usuario y los ordena por fecha de creación descendente
+      const posts = await Post.find({ creator: id }).sort({ createdAt: -1 });
+  
+      // Envía los posts encontrados como respuesta con un estado HTTP 200
+      res.status(200).json(posts);
+    } catch (error) {
+      // En caso de error durante la búsqueda, pasa el error al middleware de manejo de errores de Express
+      return next(new HttpError(error));
+    }
+  }
+
+
+  const editPost = async (req, res, next) => {
+    try {
+      // Extrae el ID del post desde los parámetros de la URL
+      const postId = req.params.id;
+  
+      // Extrae el título, categoría y descripción del cuerpo de la solicitud
+      let { title, category, description } = req.body;
+  
+      // Verifica si el título, categoría o descripción están vacíos o si la descripción es demasiado corta
+      if (!title || !category || description.length < 12) {
+        return next(new HttpError("Fill in all fields.", 422));
+      }
+  
+      if (!req.files || !req.files.thumbnail) {
+        return next(new HttpError("Thumbnail file is required.", 400));
+      }
+  
+      const { thumbnail } = req.files;
+      if (thumbnail.size > 2000000) {
+        return next(new HttpError("Thumbnail too large. Max size is 2MB.", 400));
+      }
+  
+      const fileName = thumbnail.name;
+      const splittedFilename = fileName.split('.');
+      const newFilename = `${splittedFilename[0]}${uuid()}.${splittedFilename[splittedFilename.length - 1]}`;
+  
+      // Mueve el archivo a la carpeta de uploads
+      thumbnail.mv(path.join(__dirname, '..', 'uploads', newFilename), async (err) => {
+        if (err) {
+          return next(new HttpError(err));
+        }
+  
+        const updatedPost = await Post.findByIdAndUpdate(postId, { title, category, description, thumbnail: newFilename }, { new: true });
+        if (!updatedPost) {
+          return next(new HttpError("Could not update post.", 400));
+        }
+  
+        res.status(200).json({ updatedPost });
+      });
+    } catch (error) {
+      return next(new HttpError(error));
+    }
+  }
+  
+
+
+  const deletePost = async (req, res, next) => {
+    try {
+        const postId = req.params.id;
+        if (!postId) {
+            return next(new HttpError("Post unavailable.", 400));
+        }
+
+        const post = await Post.findById(postId);
+        if (!post) {
+            return next(new HttpError("Post not found.", 404));
+        }
+
+        // Convierte ambos IDs a strings antes de compararlos
+        if (req.user.id.toString() === post.creator.toString()) {
+            const fileName = post.thumbnail;
+            fs.unlink(path.join(__dirname, '..', 'uploads', fileName), async (err) => {
+                if (err) {
+                    return next(new HttpError(err));
+                }
+                
+                await Post.findByIdAndDelete(postId);
+                const currentUser = await User.findById(req.user.id);
+                if (currentUser) {
+                    const userPostCount = currentUser.posts - 1;
+                    await User.findByIdAndUpdate(req.user.id, { posts: userPostCount });
+                }
+
+                res.json({ message: "Post deleted successfully." });
+            });
+        } else {
+            // No permitir la eliminación si el usuario no es el creador
+            return next(new HttpError("You are not authorized to delete this post.", 403));
+        }
+    } catch (error) {
+        return next(new HttpError(error));
+    }
 }
 
 
-const editPost = async (req, res,next)=>{
-    res.json("Edit Post")
-}
 
-const deletePost = async (req, res,next)=>{
-    res.json("Delete Post")
-}
+
 
 
 module.exports = { createPost, getPosts, getPost, getCatPosts, getUserPosts, editPost, deletePost };

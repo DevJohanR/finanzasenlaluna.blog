@@ -11,7 +11,7 @@ const postSchema = new Schema({
   },
   description: { type: String, required: true },  // Campo para la descripción del post, es obligatorio
   creator: { type: Schema.Types.ObjectId, ref: 'User' },  // Referencia al modelo de usuario que crea el post
-  title: { type: String, required: true },  // Campo duplicado, parece un error
+  thumbnail: { type: String, required: true },  // Campo duplicado, parece un error
 }, { timestamps: true });  // Opción para agregar automáticamente campos de timestamp (createdAt, updatedAt)
 
 // Exporta el modelo de post, utilizando el esquema definido
