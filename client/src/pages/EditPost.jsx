@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
+import { useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../context/userContext'
+import { useEffect } from 'react';
 
 // Styled components
 const CreatePostContainer = styled.section`
@@ -53,6 +57,22 @@ const EditPost = () => {
   const [category, setCategory] = useState('Uncategorized');
   const [description, setDescription] = useState('');
   const [thumbnail, setThumbnail] = useState('');
+
+
+  const navigate = useNavigate()
+
+  const {currentUser} = useContext(UserContext)
+  const token = currentUser?.token;
+
+  //redirect to login page for any user who isn't logged in 
+
+  useEffect(()=>{
+    if(!token){
+      navigate('/login')
+    }
+  }, [])
+
+
 
 
 const modules = {

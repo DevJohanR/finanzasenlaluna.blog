@@ -3,7 +3,7 @@ import { DUMMY_POSTS } from '../../data'
 import PostItem from '../PostItem/PostItem'
 
 
-const PostsAuthor = () => {
+const PostsAuthor = ({createdAt}) => {
     const [posts, setPosts] = useState(DUMMY_POSTS)
   return (
     <section className={styles.posts}>

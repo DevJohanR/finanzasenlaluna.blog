@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { UserContext } from '../context/userContext.jsx'
+
 
 // Creando componentes de estilo
 const AuthSection = styled.section`
@@ -55,6 +58,12 @@ const Login = () => {
     password: '',
   });
 
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const { setCurrentUser } = useContext(UserContext)
+
+
   // Manejador de cambio
   const changeInputHandler = (e) => {
     const { name, value } = e.target;
@@ -64,12 +73,24 @@ const Login = () => {
     }));
   }
 
+  const loginUser = async (e) =>{
+    e.preventDefault();
+    setError('')
+    try{
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, userData);
+      const user = await response.data;
+      setCurrentUser(user)
+    }catch (err){
+      setError(err.response.data.message)
+    }
+  } 
+
   return (
     <AuthSection>
       <Container>
         <h2>Sign In</h2>
-        <Form className="login_form">
-          <ErrorMessage>This is an error message</ErrorMessage>
+        <Form className="login_form" onSubmit={loginUser}>
+          {error && <ErrorMessage>{error}</ErrorMessage>} 
           <Input
             type="email"
             placeholder="Email"

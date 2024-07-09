@@ -20,11 +20,12 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Home from './pages/Home.jsx';
 import DeletePost from './pages/DeletePost.jsx';
+import UserProvider from './context/userContext.jsx'; 
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element:  <UserProvider><Layout /></UserProvider>,
     errorElement: <ErrorPage />,
     children: [
       // Rutas anidadas

@@ -11,39 +11,56 @@ const { v4: uuidv4 } = require('uuid'); // Asegúrate de importar la librería U
 // UNPROTECTED
 
 const registerUser = async (req, res, next) => {
-    try {
-      const { name, email, password, password2 } = req.body;
-      
-      if (!name || !email || !password || !password2) {
-        return next(new HttpError("Fill in all fields.", 422));
-      }
-  
-  
-      const newEmail = email.toLowerCase();
-      
-      const emailExists = await User.findOne({ email: newEmail });
-      if (emailExists) {
-        return next(new HttpError("Este correo ya existe", 422));
-      }
-  
-      if((password.trim()).length < 6){
-        return next(new HttpError("La contraseña debe tener mas de 6 caracteres", 422))
-      }
+  try {
+    const { name, email, password, password2 } = req.body;
 
-      if(password!= password2){
-        return next(new HttpError("Las contraseñas no son iguales"))
-      }
-  
-      const salt = await bcrypt.genSalt(10)
-      const hashedPass = await bcrypt.hash(password, salt);
-      const newUser = await User.create({name, email: newEmail, password: hashedPass})
-      res.status(201).json(`Nuevo usuario ${newUser.email} registrado con exito!`)
-    
-  
-    } catch (error) {
-      return next(new HttpError("Falla al registrar usuario", 500));
+    // LOG DE LOS DATOS RECIBIDOS
+    console.log("DATOS RECIBIDOS:", { name, email, password, password2 });
+
+    // VERIFICA QUE TODOS LOS CAMPOS ESTÉN COMPLETOS
+    if (!name || !email || !password || !password2) {
+      console.log("FALTAN CAMPOS POR COMPLETAR."); // LOG SI FALTAN CAMPOS
+      return next(new HttpError("Fill in all fields.", 422));
     }
-  };
+
+    // NORMALIZA EL CORREO ELECTRÓNICO
+    const newEmail = email.toLowerCase();
+
+    // VERIFICA SI EL CORREO ELECTRÓNICO YA EXISTE
+    const emailExists = await User.findOne({ email: newEmail });
+    if (emailExists) {
+      console.log("EL CORREO ELECTRÓNICO YA EXISTE."); // LOG SI EL CORREO YA EXISTE
+      return next(new HttpError("Este correo ya existe", 422));
+    }
+
+    // VERIFICA LA LONGITUD DE LA CONTRASEÑA
+    if ((password.trim()).length < 6) {
+      console.log("LA CONTRASEÑA ES DEMASIADO CORTA."); // LOG SI LA CONTRASEÑA ES CORTA
+      return next(new HttpError("La contraseña debe tener más de 6 caracteres", 422));
+    }
+
+    // VERIFICA SI LAS CONTRASEÑAS COINCIDEN
+    if (password !== password2) {
+      console.log("LAS CONTRASEÑAS NO COINCIDEN."); // LOG SI LAS CONTRASEÑAS NO COINCIDEN
+      return next(new HttpError("Las contraseñas no son iguales", 422));
+    }
+
+    // GENERA EL HASH DE LA CONTRASEÑA
+    const salt = await bcrypt.genSalt(10);
+    const hashedPass = await bcrypt.hash(password, salt);
+    console.log("CONTRASEÑA HASHEADA:", hashedPass); // LOG DE LA CONTRASEÑA HASHEADA
+
+    // CREA UN NUEVO USUARIO
+    const newUser = await User.create({ name, email: newEmail, password: hashedPass });
+    console.log("NUEVO USUARIO CREADO:", newUser); // LOG DEL NUEVO USUARIO CREADO
+
+    res.status(201).json({ message: `Nuevo usuario ${newUser.email} registrado con éxito!` });
+
+  } catch (error) {
+    console.error("ERROR AL REGISTRAR USUARIO:", error.message); // LOG DEL ERROR EN EL SERVIDOR
+    return next(new HttpError("Falla al registrar usuario", 500));
+  }
+};
 //=================== LOGIN A REGISTERED USER
 //POST: api/users/login
 // UNPROTECTED

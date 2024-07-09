@@ -92,26 +92,22 @@ const getPosts = async (req, res,next)=>{
 //PROTECTED
 
 const getPost = async (req, res, next) => {
-    try {
-      // Obtiene el ID del post desde los parámetros de la URL
+  try {
       const postId = req.params.id;
-  
-      // Intenta encontrar el post por ID utilizando una función ficticia Post.findById que podría estar definida en un modelo de Mongoose
+      console.log('Request postId:', postId); // Add this line to log the postId
+
       const post = await Post.findById(postId);
-  
-      // Verifica si el post existe
+
       if (!post) {
-        // Si no se encuentra el post, envía un error 404 con un mensaje
-        return next(new HttpError("Post not found.", 404));
+          return next(new HttpError("Post not found.", 404));
       }
-  
-      // Si el post existe, envía el post como respuesta con un estado HTTP 200
+
       res.status(200).json(post);
-    } catch (error) {
-      // Maneja cualquier otro error que pueda ocurrir durante la ejecución
-      return next(new HttpError(error));
-    }
+  } catch (error) {
+      console.error('Error fetching post:', error); // Add this line to log the error
+      return next(new HttpError(error.message, 500));
   }
+};
 
 
 

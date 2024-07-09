@@ -3,6 +3,10 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaEdit, FaCheck } from 'react-icons/fa';
 import AvatarImage from '../components/images/avatar1.jpg'; // Asegúrate de que la ruta es correcta
+import { useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../context/userContext'
+import { useEffect } from 'react';
 
 const ProfileSection = styled.section`
   display: flex;
@@ -92,6 +96,21 @@ const UserProfile = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
+  const navigate = useNavigate()
+
+  const {currentUser} = useContext(UserContext)
+  const token = currentUser?.token;
+
+  //redirect to login page for any user who isn't logged in 
+
+  useEffect(()=>{
+    if(!token){
+      navigate('/login')
+    }
+  }, [])
+
+
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];

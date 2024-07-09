@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';  // Asegúrate de importar Link de react-router-dom
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 // Creando componentes de estilo
 const RegisterSection = styled.section`
@@ -57,21 +58,53 @@ const Register = () => {
     password2: ''
   });
 
-  // Manejador de cambio usando el método que te gustó
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
   const changeInputHandler = (e) => {
     const { name, value } = e.target;
     setUserData(prevState => ({
       ...prevState,
       [name]: value
     }));
-  }
+  };
+
+  const registerUser = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (userData.password !== userData.password2) {
+      setError("Las contraseñas no coinciden");
+      return;
+    }
+
+    try {
+      console.log("SENDING USER DATA:", userData); // LOG DE DATOS ENVIADOS
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, userData);
+      const newUser = response.data;
+      console.log("API RESPONSE:", newUser); // LOG DE LA RESPUESTA DE LA API
+      if (!newUser) {
+        setError("No se puede registrar el usuario, intente nuevamente");
+      } else {
+        navigate('/login');
+      }
+    } catch (err) {
+      console.error("ERROR RESPONSE:", err); // LOG DEL ERROR
+      if (err.response) {
+        console.error("ERROR RESPONSE DATA:", err.response.data); // LOG DE LOS DATOS DEL ERROR
+        setError(err.response.data.message || 'Error al registrar el usuario');
+      } else {
+        setError('Error al registrar el usuario');
+      }
+    }
+  };
 
   return (
     <RegisterSection>
       <Container>
         <h2>Sign Up</h2>
-        <Form className="register_form">
-          <ErrorMessage>This is an error message</ErrorMessage>
+        <Form className="register_form" onSubmit={registerUser}>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
           <Input
             type="text"
             placeholder="Full Name"
@@ -100,7 +133,7 @@ const Register = () => {
             value={userData.password2}
             onChange={changeInputHandler}
           />
-          <Button type="submit">Register</Button>  // Botón estilizado
+          <Button type="submit">Register</Button>
         </Form>
         <small>¿Ya tienes cuenta? <Link to="/login">Ingresar</Link></small>
       </Container>

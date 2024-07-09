@@ -9,7 +9,7 @@ const DetailPost = () => {
         <section className={styles.postDetail}>
             <div className={`${styles.container} ${styles.postDetailContainer}`}>
                 <div className={styles.postDetailHeader}>
-                    <PostAuthor/>
+                    {/*<PostAuthor/>*/}
                     <div className={styles.postDetailButtons}>
                         <Link to="/posts/werwer/edit" className={`${styles.btn} ${styles.btnPrimary}`}>Edit</Link>
                         <Link to="/posts/werwer/delete" className={`${styles.btn} ${styles.btnDanger}`}>Delete</Link>
