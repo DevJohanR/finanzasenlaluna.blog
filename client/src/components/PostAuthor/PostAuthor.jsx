@@ -32,7 +32,7 @@ useEffect(()=>{
 const imageAuthorUrl = `${import.meta.env.VITE_ASSETS_URL}/uploads/${author?.avatar}`;
 
   return (
-    <Link to="/posts/users/sdfdsf" className={styles.post_author}>
+    <Link to={`/posts/users/${authorID}`} className={styles.post_author}>
       <div className={styles.post_author_avatar}>
         <img src={imageAuthorUrl} alt="Ernest Achiever" />
       </div>
