@@ -204,6 +204,10 @@ const getUserPosts = async (req, res, next) => {
       return next(new HttpError(error.message, 500));
     }
   };
+
+  
+ //
+ //
   
   /*
   const editPost = async (req, res, next) => {

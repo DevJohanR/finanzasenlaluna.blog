@@ -1,11 +1,10 @@
-import React, { useContext,useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/userContext';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-// Importando los datos de ejemplo
-import { DUMMY_POSTS } from '../data';
+import axios from 'axios';
+import Loader from '../components/Loader/Loader';
+import DeletePost from './DeletePost';
 
 // Estilos con styled-components para mantener el estilo coherente
 const DashboardContainer = styled.section`
@@ -56,36 +55,60 @@ const Button = styled(Link)`
 `;
 
 const Dashboard = () => {
-  const [posts, setPosts] = useState(DUMMY_POSTS);
+  const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { id } = useParams();
 
-  const navigate = useNavigate()
-
-  const {currentUser} = useContext(UserContext)
+  const { currentUser } = useContext(UserContext);
   const token = currentUser?.token;
 
-  //redirect to login page for any user who isn't logged in 
-
-  useEffect(()=>{
-    if(!token){
-      navigate('/login')
+  // Redirect to login page for any user who isn't logged in
+  useEffect(() => {
+    if (!token) {
+      navigate('/login');
     }
-  }, [])
+  }, [token, navigate]);
 
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/posts/users/${id}`, {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setPosts(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+      setIsLoading(false);
+    };
+    fetchPosts();
+  }, [id, token]);
+
+  const handleDelete = (postId) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId)); // Actualizar la lista de posts después de eliminar
+  };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <DashboardContainer>
       {posts.length > 0 ? (
         <PostContainer>
-          {posts.map(post => (
-            <PostArticle key={post.id}>
+          {posts.map((post) => (
+            <PostArticle key={post._id}>
               <PostThumbnail>
-                <ThumbnailImage src={post.thumbnail} alt="" />
+                <ThumbnailImage src={`${import.meta.env.VITE_ASSETS_URL}/uploads/${post.thumbnail}`} alt="" />
               </PostThumbnail>
               <Title>{post.title}</Title>
               <ActionContainer>
-                <Button to={`/posts/${post.id}`}>View</Button>
-                <Button to={`/posts/${post.id}/edit`} className="primary">Edit</Button>
-                <Button to={`/posts/${post.id}/delete`} className="danger">Delete</Button>
+                <Button to={`/posts/${post._id}`}>View</Button>
+                <Button to={`/posts/${post._id}/edit`} className="primary">Edit</Button>
+                <DeletePost postId={post._id} onDelete={handleDelete} /> {/* Pasar handleDelete como prop */}
               </ActionContainer>
             </PostArticle>
           ))}
@@ -95,6 +118,6 @@ const Dashboard = () => {
       )}
     </DashboardContainer>
   );
-}
+};
 
 export default Dashboard;
