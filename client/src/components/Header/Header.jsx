@@ -27,7 +27,7 @@ const Header = () => {
           <img src={Logo} style={{display:'block', objectFit:'cover', width:'100%'}} alt="Navbar Logo" />
         </Link>
        { currentUser?.id && isNavShowing && <ul className={styles.navMenu}>
-          <li><Link to="/profile/sdfsdf" onClick={closeNavHandler} >Norman Luna</Link></li>
+          <li><Link to="/profile/sdfsdf" onClick={closeNavHandler} >{currentUser?.name}</Link></li>
           <li><Link to="/create" onClick={closeNavHandler}>Crear publicación</Link></li>
           <li><Link to="/authors" onClick={closeNavHandler}>Autores</Link></li>
           <li><Link to="/logout" onClick={closeNavHandler}>Cerrar sesión</Link></li>

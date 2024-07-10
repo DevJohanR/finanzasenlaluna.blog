@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios'
 import { UserContext } from '../context/userContext';
 
 
@@ -155,7 +155,7 @@ const CreatePost = () => {
   const [category, setCategory] = useState('Uncategorized');
   const [description, setDescription] = useState('');
   const [thumbnail, setThumbnail] = useState('');
-
+  const [error, setError] = useState('')
   const navigate = useNavigate()
 
   const {currentUser} = useContext(UserContext)
@@ -204,10 +204,24 @@ const CreatePost = () => {
     "Weather"
   ];
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // Aquí se manejaría la lógica para crear el post
-    console.log({ title, category, description, thumbnail });
+    const postData = new FormData();
+    postData.set('title', title);
+    postData.set('category', category);
+    postData.set('description', description);
+    postData.set('thumbnail', thumbnail);
+
+    try{
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/posts`, postData, {withCredentials: true, headers : {Authorization:`Bearer ${token}`}})
+      if(response.status == 201){
+        return navigate('/')
+      }
+    } catch(err){
+      setError(err.response.data.message)
+    }
+
     // Reset form
     setTitle('');
     setCategory('Uncategorized');
@@ -218,6 +232,7 @@ const CreatePost = () => {
   return (
     <CreatePostContainer>
       <Title>Crear Publicación</Title>
+      {error && <p className='error'>{error}</p> }
       <Form onSubmit={handleSubmit}>
         <Input
           type="text"
@@ -249,7 +264,7 @@ const CreatePost = () => {
             type="file"
             id="file-upload"
             onChange={e => setThumbnail(e.target.files[0])}
-            accept='image/png, image/jpg, image/jpeg'
+            accept='image/png, image/jpg, image/jpeg, image/webp'
             style={{ borderColor: '#04ab04', boxShadow: '0 0 8px rgba(4, 171, 4, 0.3)' }}
           />
         </FileInputContainer>

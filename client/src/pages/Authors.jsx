@@ -1,20 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import Loader from '../components/Loader/Loader';
 
-import Avatar1 from '../components/images/avatar1.jpg';
-import Avatar2 from '../components/images/avatar2.jpg';
-import Avatar3 from '../components/images/avatar3.jpg';
-import Avatar4 from '../components/images/avatar4.jpg';
-import Avatar5 from '../components/images/avatar5.jpg';
 
-const authorsData = [
-  {id: 1, avatar: Avatar1, name: 'Norman', posts: 3},
-  {id: 2, avatar: Avatar2, name: 'Liliana', posts: 5},
-  {id: 3, avatar: Avatar3, name: 'Yeimmi', posts: 0},
-  {id: 4, avatar: Avatar4, name: 'Johan', posts: 2},
-  {id: 5, avatar: Avatar5, name: 'David', posts: 1},
-];
 
 // Styled components
 const AuthorsContainer = styled.div`
@@ -56,14 +46,34 @@ const AuthorInfo = styled.div`
 `;
 
 const Authors = () => {
-  const [authors, setAuthors] = useState(authorsData);
+  const [authors, setAuthors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(()=>{
+    console.log(`Probando: ${import.meta.env.VITE_BASE_URL}`)
+    const getAuthors = async () =>{
+      setIsLoading(true);
+      try{
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users`)
+        setAuthors(response.data)
+      }catch (error){
+        console.log(error)
+      }
+      setIsLoading(false)
+    }
+    getAuthors();
+  },[])
+
+  if(isLoading){
+    return <Loader/>
+  }
 
   return (
     <AuthorsContainer>
       {authors.length > 0 ? (
-        authors.map(({id, avatar, name, posts}) => (
+        authors.map(({_id: id, avatar, name, posts}) => (
           <AuthorLink key={id} to={`/posts/users/${id}`}>
-            <Avatar src={avatar} alt={`Image of ${name}`} />
+            <Avatar src={`${import.meta.env.VITE_ASSETS_URL}/uploads/${avatar}`} alt={`Image of ${name}`} />
             <AuthorInfo>
               <h4>{name}</h4>
               <p>{posts} posts</p>

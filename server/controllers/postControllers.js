@@ -154,7 +154,58 @@ const getUserPosts = async (req, res, next) => {
     }
   }
 
-
+  const editPost = async (req, res, next) => {
+    try {
+      const postId = req.params.id;
+      const { title, category, description } = req.body;
+  
+      // Verificación adicional
+      console.log('Post ID:', postId);
+      console.log('Request body:', req.body);
+  
+      if (!title || !category || description.length < 12) {
+        return next(new HttpError("Fill in all fields.", 422));
+      }
+  
+      let newFilename = null;
+      if (req.files && req.files.thumbnail) {
+        const { thumbnail } = req.files;
+  
+        if (thumbnail.size > 2000000) {
+          return next(new HttpError("Thumbnail too large. Max size is 2MB.", 400));
+        }
+  
+        const fileName = thumbnail.name;
+        const splittedFilename = fileName.split('.');
+        newFilename = `${splittedFilename[0]}${uuid()}.${splittedFilename[splittedFilename.length - 1]}`;
+  
+        // Mueve el archivo a la carpeta de uploads
+        thumbnail.mv(path.join(__dirname, '..', 'uploads', newFilename), (err) => {
+          if (err) {
+            console.error('Error moving file:', err);
+            return next(new HttpError(err));
+          }
+        });
+      }
+  
+      const updateData = { title, category, description };
+      if (newFilename) {
+        updateData.thumbnail = newFilename;
+      }
+  
+      const updatedPost = await Post.findByIdAndUpdate(postId, updateData, { new: true });
+      if (!updatedPost) {
+        return next(new HttpError("Could not update post.", 400));
+      }
+  
+      res.status(200).json({ updatedPost });
+    } catch (error) {
+      console.error('Error in editPost:', error);
+      return next(new HttpError(error.message, 500));
+    }
+  };
+  
+  /*
   const editPost = async (req, res, next) => {
     try {
       // Extrae el ID del post desde los parámetros de la URL
@@ -198,8 +249,11 @@ const getUserPosts = async (req, res, next) => {
       return next(new HttpError(error));
     }
   }
-  
+  */
 
+
+
+  
 
   const deletePost = async (req, res, next) => {
     try {
@@ -238,7 +292,6 @@ const getUserPosts = async (req, res, next) => {
         return next(new HttpError(error));
     }
 }
-
 
 
 
