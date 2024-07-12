@@ -13,7 +13,7 @@ const AuthSection = styled.section`
 const Container = styled.div`
   max-width: 600px;
   margin: auto;
-  padding: 20px;
+  padding: 60px 20px;  /* Aumentar el padding para hacer el contenedor más alto */
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
@@ -22,11 +22,23 @@ const Container = styled.div`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  gap: 20px;
+`;
+
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+`;
+
+const Label = styled.label`
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #333;
 `;
 
 const Input = styled.input`
-  margin-bottom: 20px;
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -40,7 +52,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  padding: 10px 20px;
+  padding: 12px 20px;
   background-color: #05ca05;
   color: white;
   font-size: 16px;
@@ -58,7 +70,31 @@ const Button = styled.button`
 const ErrorMessage = styled.p`
   color: red;
   font-size: 14px;
-  margin-bottom: 10px;
+`;
+
+const Title = styled.h2`
+  margin-bottom: 30px;
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+`;
+
+const SmallText = styled.small`
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+
+  a {
+    color: #05ca05;
+    text-decoration: none;
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 const Login = () => {
@@ -83,39 +119,48 @@ const Login = () => {
 
   const loginUser = async (e) =>{
     e.preventDefault();
-    setError('')
+    setError('');
     try{
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`, userData);
       const user = await response.data;
-      setCurrentUser(user)
-    }catch (err){
-      setError(err.response.data.message)
+      setCurrentUser(user);
+      navigate("/");  // Redirigir al home
+    } catch (err) {
+      setError(err.response.data.message);
     }
   } 
 
   return (
     <AuthSection>
       <Container>
-        <h2>Sign In</h2>
+        <Title>Iniciar Sesión</Title>
         <Form className="login_form" onSubmit={loginUser}>
-          {error && <ErrorMessage>{error}</ErrorMessage>} 
-          <Input
-            type="email"
-            placeholder="Email"
-            name="email"
-            value={userData.email}
-            onChange={changeInputHandler}
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            name="password"
-            value={userData.password}
-            onChange={changeInputHandler}
-          />
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          <FormGroup>
+            <Label htmlFor="email">Correo electrónico</Label>
+            <Input
+              type="email"
+              id="email"
+              placeholder="tucorreo@aqui.com"
+              name="email"
+              value={userData.email}
+              onChange={changeInputHandler}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label htmlFor="password">Contraseña</Label>
+            <Input
+              type="password"
+              id="password"
+              placeholder="Tu contraseña"
+              name="password"
+              value={userData.password}
+              onChange={changeInputHandler}
+            />
+          </FormGroup>
           <Button type="submit">Ingresar</Button>
         </Form>
-        <small>¿No tienes cuenta? <Link to="/register">Registrarte</Link></small>
+        <SmallText>¿No tienes cuenta? <Link to="/register">Registrarte</Link></SmallText>
       </Container>
     </AuthSection>
   );

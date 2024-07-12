@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaEdit, FaCheck } from 'react-icons/fa';
+import { FaEdit, FaCheck, FaListAlt } from 'react-icons/fa'; // Importar iconos de react-icons
 import { UserContext } from '../context/userContext';
 import axios from 'axios';
 import styled from 'styled-components';
@@ -11,25 +11,62 @@ const ProfileSection = styled.section`
   min-height: 100vh;
   display: flex;
   align-items: center;
+  background-color: #f4f4f4;
 `;
 
 const Container = styled.div`
   max-width: 600px;
   margin: 0 auto;
   text-align: center;
-  background: #f4f4f4;
+  background: #ffffff;
   padding: 2rem;
   border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
 `;
 
 const Button = styled(Link)`
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding: 0.5rem 1rem;
-  margin-bottom: 1rem;
-  background: #007bff;
+  background: #05ca05;
   color: #fff;
   border-radius: 5px;
   text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background: #03a303;
+  }
+
+  svg {
+    margin-left: 0.5rem;
+  }
+`;
+
+const EditButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: #05ca05;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background: #03a303;
+  }
+
+  svg {
+    margin-left: 0.5rem;
+  }
 `;
 
 const ProfileDetails = styled.div`
@@ -50,10 +87,16 @@ const ProfileAvatar = styled.div`
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid #ddd;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
 const AvatarForm = styled.form`
-  display: flex;
+  display: none; /* Mantener el formulario de avatar oculto */
   flex-direction: column;
   align-items: center;
   margin-top: 0.5rem;
@@ -63,25 +106,25 @@ const AvatarInput = styled.input`
   display: none;
 `;
 
-const AvatarLabel = styled.label`
-  cursor: pointer;
-  color: #007bff;
-  font-size: 1.5rem;
-`;
-
 const AvatarButton = styled.button`
-  background: #28a745;
+  background: #05ca05;
   color: #fff;
   border: none;
   padding: 0.25rem 0.5rem;
   border-radius: 5px;
   margin-top: 0.5rem;
   cursor: pointer;
+
+  &:hover {
+    background: #03a303;
+  }
 `;
 
 const Form = styled.form`
   margin-top: 1rem;
-  display:none;
+  display: none; /* Mantener los inputs ocultos */
+  flex-direction: column;
+  gap: 1rem;
 `;
 
 const Input = styled.input`
@@ -94,12 +137,16 @@ const Input = styled.input`
 `;
 
 const SubmitButton = styled.button`
-  background: #007bff;
+  background: #05ca05;
   color: #fff;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 5px;
   cursor: pointer;
+
+  &:hover {
+    background: #03a303;
+  }
 `;
 
 const ErrorMessage = styled.p`
@@ -199,7 +246,6 @@ const UserProfile = () => {
     }
   };
 
-
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     setAvatar(file);
@@ -217,7 +263,6 @@ const UserProfile = () => {
   return (
     <ProfileSection>
       <Container>
-        <Button to={`/myposts/${currentUser.id}`}>My posts</Button>
         <ProfileDetails>
           <AvatarWrapper>
             <ProfileAvatar>
@@ -231,9 +276,6 @@ const UserProfile = () => {
                 accept="png, jpg, jpeg"
                 onChange={handleAvatarChange}
               />
-              <AvatarLabel htmlFor="avatar">
-                <FaEdit />
-              </AvatarLabel>
               {isAvatarTouched && (
                 <AvatarButton type="button" onClick={changeAvatarHandler}>
                   <FaCheck />
@@ -242,44 +284,53 @@ const UserProfile = () => {
             </AvatarForm>
           </AvatarWrapper>
           <h1>{currentUser.name}</h1>
-          <Form onSubmit={updateUserDetails}>
-            {error && <ErrorMessage>{error}</ErrorMessage>}
-            <Input
-              type="text"
-              placeholder="Full Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              type="password"
-              placeholder="Current password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-            />
-            <Input
-              type="password"
-              placeholder="New password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <Input
-              type="password"
-              placeholder="Confirm new password"
-              value={confirmNewPassword}
-              onChange={(e) => setConfirmNewPassword(e.target.value)}
-            />
-            <SubmitButton type="submit">Update details</SubmitButton>
-          </Form>
+          <ButtonGroup>
+            <Button to={`/myposts/${currentUser.id}`}>
+              My posts <FaListAlt />
+            </Button>
+            <EditButton onClick={() => document.getElementById('avatar').click()}>
+              Editar Foto <FaEdit />
+            </EditButton>
+          </ButtonGroup>
         </ProfileDetails>
+        <Form onSubmit={updateUserDetails}>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          <Input
+            type="text"
+            placeholder="Nombre Completo"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Input
+            type="email"
+            placeholder="Correo Electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Input
+            type="password"
+            placeholder="Contraseña Actual"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+          />
+          <Input
+            type="password"
+            placeholder="Nueva Contraseña"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <Input
+            type="password"
+            placeholder="Confirmar Nueva Contraseña"
+            value={confirmNewPassword}
+            onChange={(e) => setConfirmNewPassword(e.target.value)}
+          />
+          <SubmitButton type="submit">Actualizar Detalles</SubmitButton>
+        </Form>
       </Container>
     </ProfileSection>
   );
 };
 
 export default UserProfile;
+  

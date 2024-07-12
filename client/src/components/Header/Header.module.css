@@ -1,9 +1,11 @@
-nav{
+/* Header.module.css */
+
+nav {
   width: 100vw;
   height: 5rem;
   display: grid;
   place-items: center;
-  background: var(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.5);
   position: fixed;
   top: 0;
   left: 0;
@@ -12,31 +14,52 @@ nav{
   backdrop-filter: blur(20px);
 }
 
-.navContainer{
+.navContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 100%;
 }
 
-
-.navLogo{
+.navLogo {
   width: 7rem;
   display: block;
 }
 
-
-.navMenu{
+.navMenu {
   display: flex;
   align-items: center;
   gap: 3rem;
 }
 
-.navToggleBtn{
+.navToggleBtn {
   display: none;
 }
 
-.container{
+.container {
   width: var(--container-width-lg);
   margin-inline: auto;
+}
+
+@media (max-width: 800px) {
+  .navMenu {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    background: white;
+    position: absolute;
+    top: 5rem;
+    left: 0;
+    width: 100%;
+    padding: 1rem 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navMenu.show {
+    display: flex;
+  }
+  
+  .navToggleBtn {
+    display: block;
+  }
 }
