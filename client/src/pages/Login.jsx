@@ -2,8 +2,7 @@ import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { UserContext } from '../context/userContext.jsx'
-
+import { UserContext } from '../context/userContext.jsx';
 
 // Creando componentes de estilo
 const AuthSection = styled.section`
@@ -16,7 +15,8 @@ const Container = styled.div`
   margin: auto;
   padding: 20px;
   background-color: white;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 `;
 
 const Form = styled.form`
@@ -30,26 +30,35 @@ const Input = styled.input`
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:focus {
+    border-color: #05ca05;
+    outline: none;
+    box-shadow: 0 0 8px rgba(5, 202, 5, 0.2);
+  }
 `;
 
 const Button = styled.button`
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #05ca05;
   color: white;
   font-size: 16px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.3s;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #03a303;
+    box-shadow: 0 0 10px rgba(5, 202, 5, 0.5);
   }
 `;
 
 const ErrorMessage = styled.p`
   color: red;
   font-size: 14px;
+  margin-bottom: 10px;
 `;
 
 const Login = () => {
@@ -61,8 +70,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const { setCurrentUser } = useContext(UserContext)
-
+  const { setCurrentUser } = useContext(UserContext);
 
   // Manejador de cambio
   const changeInputHandler = (e) => {

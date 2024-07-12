@@ -9,7 +9,7 @@ import axios from 'axios';
 
 const DetailPost = () => {
   const { id } = useParams();
-  const navigate = useNavigate(); // Añadido navigate
+  const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +23,7 @@ const DetailPost = () => {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/posts/${id}`);
         setPost(response.data);
       } catch (error) {
-        setError(error.message);  // Ensure error message is a string
+        setError(error.message);
       }
       setIsLoading(false);
     };
@@ -32,7 +32,7 @@ const DetailPost = () => {
   }, [id]);
 
   const handleDelete = (postId) => {
-    navigate('/'); // Redirigir después de eliminar
+    navigate('/');
   };
 
   if (isLoading) {
@@ -41,23 +41,23 @@ const DetailPost = () => {
 
   return (
     <section className={styles.postDetail}>
-      {error && <p className='error'>{error}</p>}
+      {error && <p className={styles.error}>{error}</p>}
       {post && (
-        <div className={`${styles.container} ${styles.postDetailContainer}`}>
+        <div className={styles.container}>
           <div className={styles.postDetailHeader}>
             <PostAuthor authorID={post.creator} createdAt={post.createdAt} />
             {currentUser?.id === post?.creator && (
               <div className={styles.postDetailButtons}>
-                <Link to={`/posts/${post?._id}/edit`} className={`${styles.btn} ${styles.btnPrimary}`}>Edit</Link>
-                <DeletePost postId={id} onDelete={handleDelete} /> {/* Pasar handleDelete como prop */}
+                <Link to={`/posts/${post?._id}/edit`} className={styles.btnPrimary}>Edit</Link>
+                <DeletePost postId={id} onDelete={handleDelete} />
               </div>
             )}
           </div>
-          <h1>{post.title} </h1>
+          <h1 className={styles.postTitle}>{post.title}</h1>
           <div className={styles.postDetailThumbnail}>
-            <img src={`${import.meta.env.VITE_ASSETS_URL}/uploads/${post.thumbnail}`} alt="" />
+            <img src={`${import.meta.env.VITE_ASSETS_URL}/uploads/${post.thumbnail}`} alt={post.title} />
           </div>
-          <p dangerouslySetInnerHTML={{ __html: post.description }}></p>
+          <p className={styles.postDescription} dangerouslySetInnerHTML={{ __html: post.description }}></p>
         </div>
       )}
     </section>

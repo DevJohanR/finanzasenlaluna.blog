@@ -33,10 +33,11 @@
   }
   
   .category_link {
-    background: var(--color-primary); /* Define este color en tus variables CSS */
+    background: #05ca05; /* Define este color en tus variables CSS */
     color: var(--color-white);
     padding: 0.5rem 1rem;
     border-radius: 20px;
     text-decoration: none;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Black shadow */
   }
   

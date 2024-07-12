@@ -1,36 +1,95 @@
-footer{
-    background: var(--color-gray-900);
-    margin-top: 6rem;
-    padding-top: 6rem;
+footer {
+  background: black;
+  margin-top: 6rem;
+  padding-top: 6rem;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  footer {
+    padding-top: 3rem;
+    margin-top: 3rem;
+  }
+
+  .footerCategories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .footerCategories a {
+    flex: 1 1 calc(50% - 1rem); /* Two columns */
+    text-align: center;
+    padding: 0.5rem 1rem;
+  }
+
+  .footerCopyright {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .footerCategories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .footerCategories a {
+    flex: 1 1 calc(50% - 1rem); /* Two columns */
+    text-align: center;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .footerCategories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .footerCategories a {
+    flex: 1 1 calc(50% - 1rem); /* Two columns */
+    text-align: center;
+    padding: 0.5rem 1rem;
+  }
 }
 
 .footerCategories {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-bottom: 4rem;
-    list-style: none;
-  }
-  
-  .footerCategories a {
-    background: var(--color-gray-700);
-    color: var(--color-white);
-    padding: 0.6rem 1.4rem;
-    border-radius: var(--radius-2);
-    transition: var(--transition);
-    text-decoration: none;
-  }
-  
-  .footerCategories a:hover {
-    background: var(--color-white);
-    color: var(--color-gray-900);
-  }
-  
-  .footerCopyright {
-    text-align: center;
-    border-top: 2px solid var(--color-gray-700);
-    padding: 1rem;
-    color: var(--color-white);
-    font-weight: 300;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+  list-style: none;
+}
+
+.footerCategories a {
+  background: #05ca05;
+  color: var(--color-white);
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--radius-2);
+  transition: var(--transition);
+  text-decoration: none;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Black shadow */
+}
+
+.footerCategories a:hover {
+  background: var(--color-white);
+  color: var(--color-gray-900);
+}
+
+.footerCopyright {
+  text-align: center;
+  border-top: 2px solid var(--color-gray-700);
+  padding: 1rem;
+  color: var(--color-white);
+  font-weight: 300;
+}
