@@ -11,7 +11,7 @@ const ProfileSection = styled.section`
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background-color: #f4f4f4;
+  background-color: var(--color-bg);
 `;
 
 const Container = styled.div`

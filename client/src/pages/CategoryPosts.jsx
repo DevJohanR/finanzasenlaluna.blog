@@ -5,15 +5,25 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 
-// Definir los componentes estilizados
+// Define styled components
 const Section = styled.section`
-  padding: 2rem; /* Añade más estilos si necesitas */
+  padding: 2rem; /* Add more styles if needed */
 `;
 
 const PostContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 4rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 `;
 
 const CenteredMessage = styled.h2`
